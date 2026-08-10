@@ -1,0 +1,10 @@
+{
+  "name": "probe-smoke3",
+  "description": "LangChain smoke_3 probe only; use output to choose small_10 vs medium_25.",
+  "model": "arctic-text2sql-r1-7b:q4_k_m",
+  "suite": "smoke_3",
+  "stacks": ["langchain"],
+  "timeout_sec": 900,
+  "skip_publish": true,
+  "probe_only": true
+}

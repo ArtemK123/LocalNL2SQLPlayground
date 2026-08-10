@@ -1,0 +1,82 @@
+[
+  {
+    "question_id": 847,
+    "db_id": "formula_1",
+    "question": "What is the surname of the driver with the best lap time in race number 19 in the second qualifying period?",
+    "evidence": "race number refers to raceId; second qualifying period refers to q2; best lap time refers to MIN(q2);",
+    "SQL": "SELECT T2.surname FROM qualifying AS T1 INNER JOIN drivers AS T2 ON T2.driverId = T1.driverId WHERE T1.raceId = 19 ORDER BY T1.q2 ASC NULLS FIRST LIMIT 1",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 850,
+    "db_id": "formula_1",
+    "question": "Please give the name of the race held on the circuits in Germany.",
+    "evidence": "Germany is a name of country;",
+    "SQL": "SELECT DISTINCT T2.name FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID = T1.circuitId WHERE T1.country = 'Germany'",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 854,
+    "db_id": "formula_1",
+    "question": "What is the coordinates location of the circuits for Australian grand prix?",
+    "evidence": "coordinate position/location refers to lat, lng; circuits for Australian grand prix refers to races.name = 'Australian Grand Prix'",
+    "SQL": "SELECT DISTINCT T1.lat, T1.lng FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID = T1.circuitId WHERE T2.name = 'Australian Grand Prix'",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 857,
+    "db_id": "formula_1",
+    "question": "Give the coordinate position for Abu Dhabi Grand Prix.",
+    "evidence": "coordinate position/location refers to lat, lng; Abu Dhabi Grand Prix refers to races.name = 'Abu Dhabi Grand Prix'",
+    "SQL": "SELECT DISTINCT T1.lat, T1.lng FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID = T1.circuitId WHERE T2.name = 'Abu Dhabi Grand Prix'",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 859,
+    "db_id": "formula_1",
+    "question": "What's Bruno Senna's Q1 result in the qualifying race No. 354?",
+    "evidence": "race number refers to raceId; Bruno Senna refers to the full name of the driver; Full name of the driver refers to drivers.forename and drivers.surname;",
+    "SQL": "SELECT T1.q1 FROM qualifying AS T1 INNER JOIN drivers AS T2 ON T2.driverId = T1.driverId WHERE T1.raceId = 354 AND T2.forename = 'Bruno' AND T2.surname = 'Senna'",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 861,
+    "db_id": "formula_1",
+    "question": "What is his number of the driver who finished 0:01:54 in the Q3 of qualifying race No.903?",
+    "evidence": "race number refers to raceId; finished 0:0M:SS in the Q3 refers to q3 LIKE 'M:SS%'",
+    "SQL": "SELECT T2.number FROM qualifying AS T1 INNER JOIN drivers AS T2 ON T2.driverId = T1.driverId WHERE T1.raceId = 903 AND T1.q3 LIKE '1:54%'",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 862,
+    "db_id": "formula_1",
+    "question": "For the Bahrain Grand Prix in 2007, how many drivers not finished the game?",
+    "evidence": "Bahrain Grand Prix refers to races.name = 'Bahrain Grand Prix'; drivers who finished the race refers to time is not empty (i.e. time IS NOT NULL);",
+    "SQL": "SELECT COUNT(T3.driverId) FROM races AS T1 INNER JOIN results AS T2 ON T2.raceId = T1.raceId INNER JOIN drivers AS T3 ON T3.driverId = T2.driverId WHERE T1.year = 2007 AND T1.name = 'Bahrain Grand Prix' AND T2.time IS NULL",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 868,
+    "db_id": "formula_1",
+    "question": "Where is Malaysian Grand Prix held? Give the location coordinates.",
+    "evidence": "location coordinates refers to (lat, lng); Malaysian Grand Prix refers to races.name = 'Malaysian Grand Prix'",
+    "SQL": "SELECT DISTINCT T1.lat, T1.lng FROM circuits AS T1 INNER JOIN races AS T2 ON T2.circuitID = T1.circuitId WHERE T2.name = 'Malaysian Grand Prix'",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 872,
+    "db_id": "formula_1",
+    "question": "In the race No. 45, for the driver who had the Q3 time as 0:01:33, what is his abbreviated code?",
+    "evidence": "race number refers to raceId; had the Q3 time as 0:0M:SS refers to q3 LIKE 'M:SS%'",
+    "SQL": "SELECT T2.code FROM qualifying AS T1 INNER JOIN drivers AS T2 ON T2.driverId = T1.driverId WHERE T1.raceId = 45 AND T1.q3 LIKE '1:33%'",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 875,
+    "db_id": "formula_1",
+    "question": "Show me the season page of year when the race No. 901 took place.",
+    "evidence": "the season page refers to url; race number refers to raceId;",
+    "SQL": "SELECT T2.url FROM races AS T1 INNER JOIN seasons AS T2 ON T2.year = T1.year WHERE T1.raceId = 901",
+    "difficulty": "simple"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "name": "arctic-vllm-studyparity-postgres-diverse10",
+  "description": "Gate: Arctic vLLM Study-parity schema + Postgres eval/prompt dialect, timeout 10s, workers=2",
+  "model": "Snowflake/Arctic-Text2SQL-R1-7B",
+  "suite": "minidev_diverse_10",
+  "stacks": ["langchain"],
+  "mode": "api",
+  "workers": 2,
+  "timeout_sec": 10,
+  "llm_backend": "vllm",
+  "eval_engine": "postgres",
+  "ex_mode": "bird",
+  "arctic_sql_dialect": "postgresql",
+  "skip_model_check": true,
+  "skip_publish": true,
+  "skip_deploy": false
+}

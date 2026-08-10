@@ -1,0 +1,26 @@
+﻿# Secrets / local env
+**/.env
+!.env*.example
+*.pem
+**/credentials/
+**/terraform.tfvars
+**/*.tfstate
+**/*.tfstate.*
+**/.terraform/
+
+# Experiment bulk artifacts
+**/results/**/jsonl/
+**/results/**/traces/
+**/results/**/*.jsonl
+**/harness/runs/
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
+**/node_modules/
+**/*.egg-info/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

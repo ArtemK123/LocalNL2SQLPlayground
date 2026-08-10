@@ -1,0 +1,53 @@
+# GPU role: Ollama only. Pulls OLLAMA_ACTIVE_MODEL on start (local: qwen; AWS: Arctic via compose/.env).
+# Attach to nl2sql-comparison-net (external) for local smoke; on AWS bind 0.0.0.0:11434.
+
+name: nl2sql-comparison-gpu
+
+networks:
+  nl2sql-comparison-net:
+    external: true
+    name: nl2sql-comparison-net
+
+volumes:
+  ollama_data:
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "${OLLAMA_PORT:-11434}:11434"
+    environment:
+      OLLAMA_KEEP_ALIVE: ${OLLAMA_KEEP_ALIVE:-24h}
+      OLLAMA_NUM_PARALLEL: ${OLLAMA_NUM_PARALLEL:-2}
+      OLLAMA_ACTIVE_MODEL: ${OLLAMA_ACTIVE_MODEL:-${OLLAMA_PRIMARY_MODEL:-qwen2.5:7b-instruct}}
+      OLLAMA_SQL_MODEL: ${OLLAMA_SQL_MODEL:-arctic-text2sql-r1-7b:q4_k_m}
+      OLLAMA_GENERAL_MODEL: ${OLLAMA_GENERAL_MODEL:-qwen2.5-coder:14b-instruct-q8_0}
+      OLLAMA_PRIMARY_MODEL: ${OLLAMA_PRIMARY_MODEL:-qwen2.5:7b-instruct}
+      OLLAMA_FALLBACK_MODEL: ${OLLAMA_FALLBACK_MODEL:-qwen2.5:7b-instruct}
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+    volumes:
+      - ollama_data:/root/.ollama
+      - ../stack/ollama/entrypoint.sh:/entrypoint.sh:ro
+      - ../stack/ollama:/opt/nl2sql-ollama:ro
+      # Host-staged mradermacher Q4_K_M GGUF (ollama image has no curl).
+      - ../models/gguf:/models/gguf:ro
+    entrypoint:
+      - /bin/sh
+      - -c
+      - tr -d '\r' </entrypoint.sh >/tmp/entrypoint.sh && /bin/sh /tmp/entrypoint.sh
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 60
+      start_period: 600s
+    networks:
+      - nl2sql-comparison-net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

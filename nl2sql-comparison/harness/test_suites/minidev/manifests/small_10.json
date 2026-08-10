@@ -1,0 +1,20 @@
+﻿{
+    "name":  "small_10",
+    "question_ids":  [
+                         28,
+                         12,
+                         5,
+                         36,
+                         23,
+                         11,
+                         62,
+                         24,
+                         17,
+                         83
+                     ],
+    "source_files":  {
+                         "questions":  "\u003cDATASETS_ROOT\u003e/minidev/MINIDEV/mini_dev_postgresql.json",
+                         "gold":  "\u003cDATASETS_ROOT\u003e/minidev/MINIDEV/mini_dev_postgresql_gold.sql"
+                     },
+    "created_at":  "2026-05-24T18:51:56.786349+00:00"
+}

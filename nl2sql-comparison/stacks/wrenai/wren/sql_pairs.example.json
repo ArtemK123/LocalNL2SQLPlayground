@@ -1,0 +1,6 @@
+[
+  {
+    "question": "What is the average order value?",
+    "sql": "SELECT ROUND(SUM(price + freight_value) / COUNT(DISTINCT order_id), 2) FROM orders"
+  }
+]

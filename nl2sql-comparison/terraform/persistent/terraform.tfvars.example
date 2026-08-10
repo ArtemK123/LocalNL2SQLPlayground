@@ -1,0 +1,7 @@
+# Copy to terraform.tfvars (not committed) and fill in.
+
+aws_region   = "us-east-1"
+project_name = "nl2sql-comparison"
+
+# Optional: pin AZ (must match compute subnet when attaching to db host)
+# availability_zone = "us-east-1a"

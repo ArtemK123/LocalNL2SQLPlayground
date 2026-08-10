@@ -1,0 +1,28 @@
+[project]
+name = "nl2sql-comparison-harness"
+version = "0.1.0"
+description = "Browser-driven NL2SQL benchmark harness for aws/nl2sql-comparison (BIRD minidev, UI-only scoring)."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "psycopg[binary]>=3.2",
+]
+
+[project.optional-dependencies]
+ui = [
+  "playwright>=1.49",
+]
+
+[project.scripts]
+nl2sql-harness = "nl2sql_comparison_harness.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["nl2sql_comparison_harness*"]
+
+[tool.setuptools.package-dir]
+"" = "src"

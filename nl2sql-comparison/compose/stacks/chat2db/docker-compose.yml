@@ -1,0 +1,59 @@
+# Chat2DB UI — remote Postgres via seed profile; Ollama configured manually in UI.
+
+name: nl2sql-comparison-chat2db
+
+networks:
+  nl2sql-comparison-net:
+    external: true
+    name: nl2sql-comparison-net
+
+volumes:
+  chat2db_data:
+
+services:
+  chat2db:
+    image: chat2db/chat2db@sha256:e730ee53cd9fd73225a745fea39e51d1fa94d2773cb24c6a709e95287d09cade
+    ports:
+      - "${CHAT2DB_PORT:-10825}:10824"
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      - chat2db_data:/root/.chat2db
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:10824/ >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 45s
+    networks:
+      - nl2sql-comparison-net
+
+  chat2db-seed:
+    profiles: ["bootstrap"]
+    image: python:3.11-slim
+    working_dir: /work
+    volumes:
+      - ../../../stacks/chat2db/scripts:/work/scripts:ro
+    environment:
+      CHAT2DB_URL: http://chat2db:10824
+      CHAT2DB_USER: ${CHAT2DB_ADMIN_USER:-chat2db}
+      CHAT2DB_PASSWORD: ${CHAT2DB_ADMIN_PASSWORD:-chat2db}
+      OLAP_PG_HOST: ${BIRD_PG_HOST:-bird-postgres}
+      OLAP_PG_PORT: "5432"
+      OLAP_PG_DATABASE: ${BIRD_PG_DB:-bird}
+      OLAP_PG_OWNER_USER: ${BIRD_PG_USER:-bird}
+      OLAP_PG_OWNER_PASSWORD: ${BIRD_PG_PASSWORD:-bird}
+      NL2SQL_RO_USER: ${NL2SQL_RO_USER:-nl2sql_ro}
+      NL2SQL_RO_PASSWORD: ${NL2SQL_RO_PASSWORD:-nl2sql_ro}
+    depends_on:
+      chat2db:
+        condition: service_healthy
+    command:
+      [
+        "sh",
+        "-c",
+        "pip install -q requests && python /work/scripts/seed_chat2db.py",
+      ]
+    restart: "no"
+    networks:
+      - nl2sql-comparison-net

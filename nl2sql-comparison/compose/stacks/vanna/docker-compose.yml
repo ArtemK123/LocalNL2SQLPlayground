@@ -1,0 +1,34 @@
+# Vanna — remote Postgres + Ollama.
+
+name: nl2sql-comparison-vanna
+
+networks:
+  nl2sql-comparison-net:
+    external: true
+    name: nl2sql-comparison-net
+
+volumes:
+  vanna_chroma:
+
+services:
+  vanna-api:
+    build:
+      context: ../../../stacks/vanna/vanna
+      dockerfile: Dockerfile
+    ports:
+      - "${VANNA_PORT:-8001}:8000"
+    environment:
+      OLLAMA_HOST: ${OLLAMA_HOST:-http://ollama:11434}
+      OLLAMA_MODEL: ${OLLAMA_PRIMARY_MODEL:-qwen2.5:7b-instruct}
+      OLLAMA_NUM_CTX: ${OLLAMA_NUM_CTX:-4096}
+      PG_HOST: ${BIRD_PG_HOST:-bird-postgres}
+      PG_PORT: "5432"
+      PG_DATABASE: ${BIRD_PG_DB:-bird}
+      PG_USER: ${BIRD_OLAP_USER:-olap}
+      PG_PASSWORD: ${BIRD_OLAP_PASSWORD:-olap}
+      VANNA_SCHEMA_DIR: /app/schema
+    volumes:
+      - vanna_chroma:/app/chroma_data
+      - ../../../stacks/vanna/schema:/app/schema:ro
+    networks:
+      - nl2sql-comparison-net

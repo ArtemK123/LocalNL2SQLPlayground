@@ -1,0 +1,11 @@
+{
+  "name": "custom-model-template",
+  "description": "Replace model with any Ollama tag pulled on the GPU host (run deploy-gpu-from-s3.ps1 after changing).",
+  "model": "YOUR_OLLAMA_MODEL_TAG",
+  "fallback_model": "YOUR_OLLAMA_MODEL_TAG",
+  "suite": "smoke_3",
+  "stacks": ["langchain"],
+  "timeout_sec": 420,
+  "skip_publish": false,
+  "adaptive_suite": false
+}

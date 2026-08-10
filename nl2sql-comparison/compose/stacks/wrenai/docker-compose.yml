@@ -1,0 +1,183 @@
+# WrenAI — external bird-postgres; Ollama via http://ollama:11434 on shared Docker network or GPU IP in .env.
+
+name: nl2sql-comparison-wrenai
+
+networks:
+  nl2sql-comparison-net:
+    external: true
+    name: nl2sql-comparison-net
+
+volumes:
+  wren_data:
+  wren_rendered_config:
+
+services:
+  wren-config-render:
+    image: alpine:3.19
+    restart: "no"
+    environment:
+      OLLAMA_HOST: ${OLLAMA_HOST:-http://ollama:11434}
+      OLLAMA_PRIMARY_MODEL: ${OLLAMA_PRIMARY_MODEL:-qwen2.5:7b-instruct}
+      OLLAMA_EMBEDDING_MODEL: ${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text}
+      WREN_COLUMN_INDEXING_BATCH_SIZE: ${WREN_COLUMN_INDEXING_BATCH_SIZE:-10}
+      WREN_TABLE_RETRIEVAL_SIZE: ${WREN_TABLE_RETRIEVAL_SIZE:-75}
+      WREN_TABLE_COLUMN_RETRIEVAL_SIZE: ${WREN_TABLE_COLUMN_RETRIEVAL_SIZE:-100}
+    volumes:
+      - ../../../stacks/wrenai/wren/config.yaml:/templates/config.yaml:ro
+      - ../../../stacks/wrenai/wren/render-config.sh:/render-config.sh:ro
+      - wren_rendered_config:/out
+    command: ["/bin/sh", "-c", "tr -d '\\r' </render-config.sh | /bin/sh"]
+    networks:
+      - nl2sql-comparison-net
+
+  bootstrap:
+    image: ghcr.io/canner/wren-bootstrap:${WREN_BOOTSTRAP_VERSION:-0.1.5}
+    restart: on-failure
+    platform: ${PLATFORM:-linux/amd64}
+    environment:
+      DATA_PATH: /app/data
+    volumes:
+      - wren_data:/app/data
+    command: /bin/sh /app/init.sh
+    networks:
+      - nl2sql-comparison-net
+
+  wren-engine:
+    image: ghcr.io/canner/wren-engine:${WREN_ENGINE_VERSION:-0.22.0}
+    restart: on-failure
+    platform: ${PLATFORM:-linux/amd64}
+    expose:
+      - ${WREN_ENGINE_PORT:-8080}
+      - ${WREN_ENGINE_SQL_PORT:-7432}
+    volumes:
+      - wren_data:/usr/src/app/etc
+      - ../../../stacks/wrenai/wren/data:/usr/src/app/data
+    depends_on:
+      - bootstrap
+    networks:
+      - nl2sql-comparison-net
+
+  ibis-server:
+    image: ghcr.io/canner/wren-engine-ibis:${IBIS_SERVER_VERSION:-0.22.0}
+    restart: on-failure
+    platform: ${PLATFORM:-linux/amd64}
+    expose:
+      - ${IBIS_SERVER_PORT:-8000}
+    environment:
+      WREN_ENGINE_ENDPOINT: http://wren-engine:${WREN_ENGINE_PORT:-8080}
+    volumes:
+      - ../../../stacks/wrenai/wren/data:/usr/src/app/data
+    depends_on:
+      - wren-engine
+    networks:
+      - nl2sql-comparison-net
+
+  qdrant:
+    image: qdrant/qdrant:v1.15.0
+    restart: on-failure
+    expose:
+      - "6333"
+      - "6334"
+    volumes:
+      - wren_data:/qdrant/storage
+    networks:
+      - nl2sql-comparison-net
+
+  wren-ai-service:
+    image: ghcr.io/canner/wren-ai-service:${WREN_AI_SERVICE_VERSION:-0.29.0}
+    restart: on-failure
+    platform: ${PLATFORM:-linux/amd64}
+    expose:
+      - ${WREN_AI_SERVICE_PORT:-5555}
+    ports:
+      - ${AI_SERVICE_FORWARD_PORT:-5565}:${WREN_AI_SERVICE_PORT:-5555}
+    environment:
+      PYTHONUNBUFFERED: "1"
+      # Mount rendered config dir (volume subpath file mounts break on some Docker builds).
+      CONFIG_PATH: /app/wren-config/config.yaml
+      WREN_AI_SERVICE_HOST: 0.0.0.0
+      WREN_AI_SERVICE_PORT: ${WREN_AI_SERVICE_PORT:-5555}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-dummy}
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: "6333"
+    env_file:
+      - ../../../stacks/wrenai/.env
+    volumes:
+      - wren_rendered_config:/app/wren-config:ro
+      - ../../../stacks/wrenai/wren/data:/app/data:ro
+    depends_on:
+      wren-config-render:
+        condition: service_completed_successfully
+      qdrant:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:5555/health')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 90s
+    networks:
+      - nl2sql-comparison-net
+
+  wren-ui:
+    image: ghcr.io/canner/wren-ui:${WREN_UI_VERSION:-0.32.2}
+    restart: on-failure
+    platform: ${PLATFORM:-linux/amd64}
+    environment:
+      DB_TYPE: sqlite
+      SQLITE_FILE: /app/data/db.sqlite3
+      WREN_ENGINE_ENDPOINT: http://wren-engine:${WREN_ENGINE_PORT:-8080}
+      WREN_AI_ENDPOINT: http://wren-ai-service:${WREN_AI_SERVICE_PORT:-5555}
+      IBIS_SERVER_ENDPOINT: http://ibis-server:${IBIS_SERVER_PORT:-8000}
+      GENERATION_MODEL: ${GENERATION_MODEL:-ollama_chat/qwen2.5:7b-instruct}
+      WREN_ENGINE_PORT: ${WREN_ENGINE_PORT:-8080}
+      TELEMETRY_ENABLED: ${TELEMETRY_ENABLED:-false}
+      USER_UUID: ${USER_UUID:-00000000-0000-4000-8000-000000000001}
+      NEXT_PUBLIC_USER_UUID: ${USER_UUID:-00000000-0000-4000-8000-000000000001}
+      NEXT_PUBLIC_TELEMETRY_ENABLED: ${TELEMETRY_ENABLED:-false}
+    ports:
+      - ${HOST_PORT:-3001}:3000
+    volumes:
+      - wren_data:/app/data
+    depends_on:
+      wren-ai-service:
+        condition: service_healthy
+      wren-engine:
+        condition: service_started
+      ibis-server:
+        condition: service_started
+    networks:
+      - nl2sql-comparison-net
+
+  wren-bootstrapper:
+    profiles: ["wren-bootstrap"]
+    image: python:3.11-slim
+    working_dir: /app
+    environment:
+      WREN_UI_URL: http://wren-ui:3000
+      WREN_PROJECT_LANGUAGE: ${WREN_PROJECT_LANGUAGE:-EN}
+      WREN_DATASOURCE_TYPE: POSTGRES
+      WREN_DB_HOST: ${BIRD_PG_HOST:-bird-postgres}
+      WREN_DB_PORT: "5432"
+      WREN_DB_DATABASE: ${BIRD_PG_DB:-bird}
+      WREN_DB_USERNAME: ${WREN_DB_USERNAME:-nl2sql_ro}
+      WREN_DB_PASSWORD: ${WREN_DB_PASSWORD:-nl2sql_ro}
+      WREN_TARGET_TABLES: ${WREN_TARGET_TABLES:-*}
+      WREN_TARGET_SCHEMAS: ${WREN_TARGET_SCHEMAS:-}
+      WREN_RESYNC_MODEL: ${WREN_RESYNC_MODEL:-false}
+      # WREN_SQL_PAIRS_FILE: set only for ad-hoc pairs; never benchmark/smoke gold SQL.
+    volumes:
+      - ../../../stacks/wrenai/wren/bootstrap.py:/app/bootstrap.py:ro
+      - ../../../stacks/wrenai/wren/add_sql_pairs.py:/app/add_sql_pairs.py:ro
+      - ../../../stacks/wrenai/wren/requirements.txt:/app/requirements.txt:ro
+    command: >
+      sh -c "python -m pip install --no-cache-dir -r /app/requirements.txt &&
+      python /app/bootstrap.py"
+    depends_on:
+      wren-ai-service:
+        condition: service_healthy
+      wren-ui:
+        condition: service_started
+    restart: on-failure
+    networks:
+      - nl2sql-comparison-net

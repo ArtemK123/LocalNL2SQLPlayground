@@ -1,0 +1,84 @@
+﻿# LangChain NL2SQL вЂ” remote bird-postgres + Ollama (no colocated GPU).
+# Prerequisite: nl2sql-comparison-net, DB up, GPU up (or OLLAMA_HOST set).
+
+name: nl2sql-comparison-langchain
+
+networks:
+  nl2sql-comparison-net:
+    external: true
+    name: nl2sql-comparison-net
+
+volumes:
+  chainlit_data:
+
+services:
+  langchain-api:
+    build:
+      context: ../../../stacks/langchain/langchain_api
+    ports:
+      - "${LANGCHAIN_API_PORT:-8011}:8011"
+    environment:
+      API_HOST: 0.0.0.0
+      API_PORT: "8011"
+      OLLAMA_HOST: ${OLLAMA_HOST:-http://ollama:11434}
+      OLLAMA_PRIMARY_MODEL: ${OLLAMA_PRIMARY_MODEL:-qwen2.5:7b-instruct}
+      OLLAMA_FALLBACK_MODEL: ${OLLAMA_FALLBACK_MODEL:-qwen2.5:7b-instruct}
+      OLLAMA_NUM_CTX: ${OLLAMA_NUM_CTX:-4096}
+      OLLAMA_NUM_PREDICT: ${OLLAMA_NUM_PREDICT:-512}
+      LLM_BACKEND: ${LLM_BACKEND:-ollama}
+      # When LLM_BACKEND=vllm, set VLLM_BASE_URL in .env (usually same as OLLAMA_HOST :11434).
+      VLLM_BASE_URL: ${VLLM_BASE_URL:-}
+      VLLM_API_KEY: ${VLLM_API_KEY:-EMPTY}
+      LLM_HTTP_TIMEOUT_SEC: ${LLM_HTTP_TIMEOUT_SEC:-20}
+      # Arctic+vLLM: SQL-fence assistant prefill + stop (Study-path one-pass 10s).
+      ARCTIC_SQL_FENCE_PREFILL: ${ARCTIC_SQL_FENCE_PREFILL:-true}
+      ARCTIC_SQL_DIALECT: ${ARCTIC_SQL_DIALECT:-sqlite}
+      DB_URI: postgresql+psycopg://${NL2SQL_RO_USER:-nl2sql_ro}:${NL2SQL_RO_PASSWORD:-nl2sql_ro}@${BIRD_PG_HOST:-bird-postgres}:5432/${BIRD_PG_DB:-bird}
+      # DB_ALLOWED_SCHEMAS: optional comma-separated restrict list; empty = all user schemas
+      DB_ALLOWED_SCHEMAS: ${DB_ALLOWED_SCHEMAS:-}
+      BIRD_DB_PROFILE: ${BIRD_DB_PROFILE:-public}
+      QUERY_TIMEOUT_MS: ${QUERY_TIMEOUT_MS:-30000}
+      MAX_RESULT_ROWS: ${MAX_RESULT_ROWS:-200}
+      # Study-parity schema: CREATE TABLE from tables.json + BM25 top-K + FK neighbors
+      SCHEMA_SOURCE: ${SCHEMA_SOURCE:-bird_tables}
+      BIRD_TABLES_JSON: ${BIRD_TABLES_JSON:-/app/data/dev_tables.json}
+      SCHEMA_SELECTION_ENABLED: ${SCHEMA_SELECTION_ENABLED:-true}
+      SCHEMA_SHORTLIST_TOP_M: ${SCHEMA_SHORTLIST_TOP_M:-25}
+      SCHEMA_FINAL_TOP_K: ${SCHEMA_FINAL_TOP_K:-8}
+      SCHEMA_BM25_INCLUDE_FK: ${SCHEMA_BM25_INCLUDE_FK:-true}
+      SCHEMA_SELECTOR_MODE: ${SCHEMA_SELECTOR_MODE:-bm25}
+      SCHEMA_REFRESH_SECONDS: ${SCHEMA_REFRESH_SECONDS:-3600}
+      NL2SQL_FAST_MODE: ${NL2SQL_FAST_MODE:-true}
+      SQL_REPAIR_MAX_RETRIES: ${SQL_REPAIR_MAX_RETRIES:-0}
+      # skip = return SQL without PG exec (harness scores on SQLite like Study Gen EX)
+      SQL_EXEC_MODE: ${SQL_EXEC_MODE:-skip}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8011/healthz', timeout=5)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    networks:
+      - nl2sql-comparison-net
+
+  chainlit:
+    profiles: ["ui"]
+    build:
+      context: ../../../stacks/langchain/chainlit_app
+    ports:
+      - "${CHAINLIT_PORT:-8501}:8501"
+    environment:
+      CHAINLIT_APP_PORT: 8501
+      LANGCHAIN_API_URL: http://langchain-api:8011
+      CHAINLIT_AUTH_SECRET: ${CHAINLIT_AUTH_SECRET:-local-dev-secret}
+      CHAINLIT_USERNAME: ${CHAINLIT_USERNAME:-admin}
+      CHAINLIT_PASSWORD: ${CHAINLIT_PASSWORD:-admin}
+      CHAINLIT_HISTORY_DB_PATH: /app/.chainlit/history.db
+    volumes:
+      - chainlit_data:/app/.chainlit
+    depends_on:
+      langchain-api:
+        condition: service_healthy
+    networks:
+      - nl2sql-comparison-net

@@ -1,0 +1,28 @@
+﻿# Secrets / local env
+compose/.env
+**/.env
+*.pem
+**/credentials/
+**/terraform.tfvars
+**/*.tfstate
+**/*.tfstate.*
+**/.terraform/
+
+# Experiment bulk artifacts
+results/**/jsonl/
+results/**/traces/
+results/**/*.jsonl
+harness/runs/
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
+**/node_modules/
+**/*.egg-info/
+
+# Large model weights (download separately)
+models/gguf/**
+!models/gguf/.gitignore
+
+# Datasets (never vendor BIRD)
+**/BIRD_dev.sql
+**/dev_databases/

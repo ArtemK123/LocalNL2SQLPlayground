@@ -1,0 +1,4 @@
+chainlit>=2.0,<3
+requests>=2.32
+SQLAlchemy>=2.0
+aiosqlite>=0.20

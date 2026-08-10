@@ -1,0 +1,14 @@
+{
+  "name": "my-experiment",
+  "description": "Copy this file and edit stacks, model, and suite.",
+  "model": "arctic-text2sql-r1-7b:q4_k_m",
+  "fallback_model": "arctic-text2sql-r1-7b:q4_k_m",
+  "suite": "smoke_3",
+  "stacks": ["langchain", "dbgpt", "premsql", "vanna", "wrenai", "chat2db"],
+  "mode": "ui",
+  "workers": 1,
+  "timeout_sec": 900,
+  "skip_publish": true,
+  "adaptive_suite": false,
+  "probe_only": false
+}

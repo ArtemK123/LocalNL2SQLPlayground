@@ -1,0 +1,8 @@
+{
+  "chat2db": "general",
+  "langchain": "sql",
+  "dbgpt": "general",
+  "premsql": "sql",
+  "vanna": "sql",
+  "wrenai": "sql"
+}

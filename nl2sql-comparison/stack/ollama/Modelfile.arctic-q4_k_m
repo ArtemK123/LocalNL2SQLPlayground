@@ -1,0 +1,15 @@
+# Arctic Text2SQL R1 7B — Q4_K_M (mradermacher static quant).
+# Built on GPU host by ensure-arctic-q4.sh → tag arctic-text2sql-r1-7b:q4_k_m
+#
+# Prompting: use Snowflake OmniSQL-adapted CoT eval format (arxiv 2505.20315 App. C /
+# ArcticTraining bird_eval/infer.py). Do NOT force SQL-only / </sql> stop — that caused
+# EX=0 on diverse10 (model emits CoT + ```sql; premature stop truncated before SELECT).
+# GGUF: https://huggingface.co/mradermacher/Arctic-Text2SQL-R1-7B-GGUF
+
+FROM ./Arctic-Text2SQL-R1-7B.Q4_K_M.gguf
+
+SYSTEM """You are a data science expert. Below, you are provided with a database schema and a natural language question. Your task is to understand the schema and generate a valid SQL query to answer the question."""
+
+PARAMETER temperature 0
+# CoT + SQL needs headroom; 256 truncates mid-reasoning on L4 Q4.
+PARAMETER num_predict 1024

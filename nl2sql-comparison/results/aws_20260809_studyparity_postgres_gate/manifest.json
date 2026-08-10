@@ -1,0 +1,42 @@
+﻿{
+    "arctic_sql_dialect":  "postgresql",
+    "cluster":  {
+                    "region":  "us-east-1",
+                    "account":  "YOUR_AWS_ACCOUNT_ID",
+                    "db_ip":  "10.50.1.DB",
+                    "ollama":  "http://10.50.1.GPU:11434",
+                    "gpu_ip":  "10.50.1.GPU"
+                },
+    "dsn_eval":  "postgresql://olap:olap@127.0.0.1:55433/bird",
+    "eval_engine":  "postgres",
+    "ex_mode":  "bird",
+    "fallback_model":  "Snowflake/Arctic-Text2SQL-R1-7B",
+    "finished_at":  "2026-08-09T23:21:16.8023906+03:00",
+    "frameworks":  [
+                       {
+                           "suite":  "minidev_diverse_10",
+                           "name":  "langchain",
+                           "model":  "Snowflake/Arctic-Text2SQL-R1-7B",
+                           "mode":  "api"
+                       }
+                   ],
+    "gpu_active_model_at_start":  "vllm:Snowflake/Arctic-Text2SQL-R1-7B",
+    "gpu_instance_type":  "g6.xlarge",
+    "jsonl_paths_local":  [
+                              "results/aws_20260809_studyparity_postgres_gate/jsonl/\u003cframework\u003e_\u003csuite\u003e.jsonl"
+                          ],
+    "llm_backend":  "vllm",
+    "mode":  "api",
+    "model":  "Snowflake/Arctic-Text2SQL-R1-7B",
+    "models":  {
+                   "langchain":  "Snowflake/Arctic-Text2SQL-R1-7B"
+               },
+    "notes":  "API mode (run-api) on laptop; workers=2; llm_backend=vllm; eval_engine=postgres ex_mode=bird arctic_sql_dialect=postgresql; stacks on NL2SQL EC2. Chainlit skipped for langchain.",
+    "questions_per_stack":  10,
+    "run_id":  "aws_20260809_studyparity_postgres_gate",
+    "sqlite_databases_dir":  null,
+    "started_at":  "2026-08-09T23:19:50.6423292+03:00",
+    "suite":  "minidev_diverse_10",
+    "timeout_sec":  10,
+    "workers":  2
+}

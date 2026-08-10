@@ -1,0 +1,41 @@
+﻿{
+    "cluster":  {
+                    "region":  "us-east-1",
+                    "account":  "YOUR_AWS_ACCOUNT_ID",
+                    "db_ip":  "10.50.1.DB",
+                    "ollama":  "http://10.50.1.GPU:11434",
+                    "gpu_ip":  "10.50.1.GPU"
+                },
+    "dsn_eval":  "sqlite:C:\\Datasets\\bird\\minidev\\MINIDEV\\dev_databases",
+    "eval_engine":  "sqlite",
+    "ex_mode":  "bird",
+    "fallback_model":  "Snowflake/Arctic-Text2SQL-R1-7B",
+    "finished_at":  "2026-08-09T23:08:27.2404290+03:00",
+    "frameworks":  [
+                       {
+                           "suite":  "full",
+                           "name":  "langchain",
+                           "model":  "Snowflake/Arctic-Text2SQL-R1-7B",
+                           "mode":  "api"
+                       }
+                   ],
+    "gpu_active_model_at_start":  "vllm:Snowflake/Arctic-Text2SQL-R1-7B",
+    "gpu_instance_type":  "g6.xlarge",
+    "jsonl_paths_local":  [
+                              "results/aws_20260809_studyparity_full/jsonl/\u003cframework\u003e_\u003csuite\u003e.jsonl"
+                          ],
+    "llm_backend":  "vllm",
+    "mode":  "api",
+    "model":  "Snowflake/Arctic-Text2SQL-R1-7B",
+    "models":  {
+                   "langchain":  "Snowflake/Arctic-Text2SQL-R1-7B"
+               },
+    "notes":  "API mode (run-api) on laptop; workers=2; llm_backend=vllm; eval_engine=sqlite ex_mode=bird; stacks on NL2SQL EC2. Chainlit skipped for langchain.",
+    "questions_per_stack":  500,
+    "run_id":  "aws_20260809_studyparity_full",
+    "sqlite_databases_dir":  "C:\\Datasets\\bird\\minidev\\MINIDEV\\dev_databases",
+    "started_at":  "2026-08-09T22:50:58.4482889+03:00",
+    "suite":  "full",
+    "timeout_sec":  10,
+    "workers":  2
+}

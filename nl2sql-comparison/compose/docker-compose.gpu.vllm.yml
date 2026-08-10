@@ -1,0 +1,70 @@
+# GPU role: vLLM OpenAI-compatible server for Arctic Text2SQL.
+# Host port 11434 → container :8000 so existing SG (nl2sql→gpu:11434) stays unchanged.
+# Capacity knobs (max-model-len, gpu-memory-utilization) size the KV cache for L4 24GB.
+# Harness concurrency is controlled by experiment `workers`, not by specializing this deploy.
+
+name: nl2sql-comparison-gpu-vllm
+
+networks:
+  nl2sql-comparison-net:
+    external: true
+    name: nl2sql-comparison-net
+
+volumes:
+  vllm_hf_cache:
+
+services:
+  vllm:
+    # Pin via VLLM_IMAGE when promoting a known-good release (avoid floating :latest in long runs).
+    image: ${VLLM_IMAGE:-vllm/vllm-openai:latest}
+    ports:
+      - "${VLLM_HOST_PORT:-11434}:8000"
+    environment:
+      HUGGING_FACE_HUB_TOKEN: ${HUGGING_FACE_HUB_TOKEN:-}
+      HF_HOME: /root/.cache/huggingface
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+    volumes:
+      - vllm_hf_cache:/root/.cache/huggingface
+    # Snowflake Arctic-Text2SQL-R1-7B on L4 24GB:
+    # - max-model-len caps prompt+completion KV (NL2SQL CoT + schema fits ~4k)
+    # - gpu-memory-utilization 0.90 = vLLM default; leaves CUDA headroom vs 0.95+
+    # - dtype auto picks bf16/fp16 from weights
+    # - enable-prefix-caching helps shared system/schema prefixes across questions
+    # - omit --max-num-seqs so engine default continuous batching applies;
+    #   optional override: VLLM_MAX_NUM_SEQS (ops only; not tied to harness workers)
+    # - enforce-eager optional via VLLM_ENFORCE_EAGER=1 (lower mem, lower throughput)
+    command:
+      - Snowflake/Arctic-Text2SQL-R1-7B
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8000"
+      - --max-model-len
+      - "${VLLM_MAX_MODEL_LEN:-4096}"
+      - --gpu-memory-utilization
+      - "${VLLM_GPU_MEMORY_UTILIZATION:-0.90}"
+      - --dtype
+      - "${VLLM_DTYPE:-auto}"
+      - --enable-prefix-caching
+      - --served-model-name
+      - "${VLLM_SERVED_MODEL_NAME:-Snowflake/Arctic-Text2SQL-R1-7B}"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -sf http://127.0.0.1:8000/v1/models >/dev/null || exit 1",
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 120
+      start_period: 900s
+    networks:
+      - nl2sql-comparison-net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

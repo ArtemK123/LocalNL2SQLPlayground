@@ -1,0 +1,55 @@
+version: 1
+name: wrenai_postgre_olap_semantics
+description: Minimal semantic contract for smoke scenarios.
+entities:
+  - id: customer
+    table: mart.dim_customer
+    dimensions:
+      - customer_id
+      - name
+      - country
+      - created_at
+  - id: order
+    table: mart.fact_order
+    dimensions:
+      - order_id
+      - customer_id
+      - order_date
+    measures:
+      - amount_cents
+  - id: event
+    table: mart.fact_event
+    dimensions:
+      - event_id
+      - customer_id
+      - event_type
+      - occurred_at
+  - id: customer_activity
+    table: analytics.customer_activity
+    dimensions:
+      - customer_id
+      - customer_name
+      - country
+    measures:
+      - order_count
+      - total_amount_cents
+  - id: daily_sales
+    table: analytics.daily_sales
+    dimensions:
+      - order_date
+    measures:
+      - orders_count
+      - sales_cents
+  - id: event_summary
+    table: analytics.event_summary
+    dimensions:
+      - event_type
+    measures:
+      - event_count
+relationships:
+  - from: mart.fact_order.customer_id
+    to: mart.dim_customer.customer_id
+    type: many_to_one
+  - from: mart.fact_event.customer_id
+    to: mart.dim_customer.customer_id
+    type: many_to_one

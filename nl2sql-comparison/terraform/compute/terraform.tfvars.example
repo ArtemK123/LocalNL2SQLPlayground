@@ -1,0 +1,31 @@
+# Copy to terraform.tfvars (not committed) and fill in.
+#
+# Apply order:
+#   1. terraform/persistent/  -> note volume_id and availability_zone
+#   2. terraform/compute/     -> set persistent_volume_id from step 1
+
+aws_region       = "us-east-1"
+project_name     = "nl2sql-comparison"
+allowed_ssh_cidr = "203.0.113.10/32" # your public IPv4 /32
+key_name         = "my-keypair-name" # existing key pair in region
+
+# From: terraform -chdir=../persistent output -raw volume_id
+persistent_volume_id = "vol-0123456789abcdef0"
+
+# Pinned dataset source for setup:
+bird_dataset_bucket  = "my-bird-datasets-bucket"
+bird_dataset_prefix  = "nl2sql-comparison/bird"
+bird_dataset_version = "2026-05-01"
+
+# Optional overrides:
+# bastion_instance_type = "t3.micro"
+# db_instance_type      = "c7i.xlarge"
+gpu_instance_type     = "g6.xlarge"   # on-demand L4 (4 vCPU); LangChain+Arctic default
+# nl2sql_instance_type  = "c7i.xlarge"
+# db_root_volume_gb     = 30
+# gpu_root_volume_gb    = 160  # vLLM image + HF Arctic cache + docker headroom
+# nl2sql_root_volume_gb = 80
+# db_use_spot           = true
+gpu_use_spot          = false         # on-demand GPU for stable Arctic inference
+# Spot-only G quota fallback: gpu_use_spot = true, gpu_instance_type = g5.xlarge
+# nl2sql_use_spot       = true

@@ -1,0 +1,17 @@
+{
+  "name": "arctic-vllm-onepass-10s-full",
+  "description": "Full minidev: Arctic vLLM one-pass Study-parity (SQLite Gen EX, BM25+FK CREATE TABLE schema, SQL-fence prefill+stop), timeout 10s, workers=2",
+  "model": "Snowflake/Arctic-Text2SQL-R1-7B",
+  "suite": "full",
+  "stacks": ["langchain"],
+  "mode": "api",
+  "workers": 2,
+  "timeout_sec": 10,
+  "llm_backend": "vllm",
+  "eval_engine": "sqlite",
+  "ex_mode": "bird",
+  "sqlite_databases_dir": "/path/to/BIRD-Mini-Dev/MINIDEV/dev_databases",
+  "skip_model_check": true,
+  "skip_publish": true,
+  "skip_deploy": true
+}

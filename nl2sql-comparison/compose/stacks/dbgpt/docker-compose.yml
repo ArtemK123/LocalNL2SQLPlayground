@@ -1,0 +1,64 @@
+# DbGPT + dbgpt_api — remote Postgres + Ollama.
+
+name: nl2sql-comparison-dbgpt
+
+networks:
+  nl2sql-comparison-net:
+    external: true
+    name: nl2sql-comparison-net
+
+volumes:
+  dbgpt_data:
+  dbgpt_meta:
+
+services:
+  dbgpt-webserver:
+    build:
+      context: ../../../stacks/dbgpt/dbgpt_webserver
+    image: nl2sql-dbgpt-webserver:latest
+    command: dbgpt start webserver --config /app/configs/dbgpt-proxy-ollama.toml
+    environment:
+      LLM_MODEL_NAME: ${OLLAMA_PRIMARY_MODEL:-qwen2.5:7b-instruct}
+      EMBEDDING_MODEL_NAME: ${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text}
+      OLLAMA_API_BASE: ${OLLAMA_HOST:-http://ollama:11434}
+      DBGPT_LANG: ${DBGPT_LANG:-en}
+    volumes:
+      - ../../../stacks/dbgpt/dbgpt/configs:/app/configs:ro
+      - dbgpt_data:/app/pilot/data
+      - dbgpt_meta:/app/pilot/meta_data
+    ports:
+      - "${DBGPT_PORT:-5670}:5670"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:5670/', timeout=5)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    networks:
+      - nl2sql-comparison-net
+
+  dbgpt-api:
+    build:
+      context: ../../../stacks/dbgpt/dbgpt_api
+    ports:
+      - "${DBGPT_API_PORT:-8012}:8012"
+    environment:
+      API_HOST: 0.0.0.0
+      API_PORT: "8012"
+      DBGPT_BASE_URL: http://dbgpt-webserver:5670
+      OLLAMA_HOST: ${OLLAMA_HOST:-http://ollama:11434}
+      DB_URI: postgresql+psycopg://${NL2SQL_RO_USER:-nl2sql_ro}:${NL2SQL_RO_PASSWORD:-nl2sql_ro}@${BIRD_PG_HOST:-bird-postgres}:5432/${BIRD_PG_DB:-bird}
+      DB_ALLOWED_SCHEMAS: ${DB_ALLOWED_SCHEMAS:-public}
+      OLLAMA_PRIMARY_MODEL: ${OLLAMA_PRIMARY_MODEL:-qwen2.5:7b-instruct}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      dbgpt-webserver:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8012/healthz', timeout=5)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    networks:
+      - nl2sql-comparison-net

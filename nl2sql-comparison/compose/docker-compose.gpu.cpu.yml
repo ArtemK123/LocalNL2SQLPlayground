@@ -1,0 +1,4 @@
+# Override for hosts without NVIDIA (local laptop / CPU fallback on NL2SQL).
+services:
+  ollama:
+    deploy: {}

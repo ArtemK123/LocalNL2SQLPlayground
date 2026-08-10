@@ -1,0 +1,4 @@
+# Vanna 2.0 — active fork (see ../UPSTREAM.md). Installs module `vanna`.
+datachat[fastapi,ollama,postgres] @ git+https://github.com/drharunyuksel/datachat.git@33a30fb63ecf8f3d299093a30f24415a8e200592
+uvicorn[standard]==0.32.1
+python-dotenv==1.0.1

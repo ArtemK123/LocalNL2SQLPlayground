@@ -1,0 +1,28 @@
+# DB role on AWS EC2 — PGDATA on persistent EBS at /data/postgres.
+
+name: nl2sql-comparison-db
+
+services:
+  bird-postgres:
+    container_name: bird-postgres
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${BIRD_PG_USER:-bird}
+      POSTGRES_PASSWORD: ${BIRD_PG_PASSWORD:-bird}
+      POSTGRES_DB: ${BIRD_PG_DB:-bird}
+    ports:
+      - "${BIRD_PG_PORT:-5432}:5432"
+    volumes:
+      - /data/postgres:/var/lib/postgresql/data
+      - ../stack/bird/init/00_roles.sql:/docker-entrypoint-initdb.d/00_roles.sql:ro
+      - ../stack/bird/init/01_olap_compat.sql:/docker-entrypoint-initdb.d/01_olap_compat.sql:ro
+      - ../stack/bird/init/02_bird_dump_owner.sql:/docker-entrypoint-initdb.d/02_bird_dump_owner.sql:ro
+      - ../stack/bird/init/z01_load_seed_sql.sh:/docker-entrypoint-initdb.d/z01_load_seed_sql.sh:ro
+      - ../stack/bird/init/z99_grants.sh:/docker-entrypoint-initdb.d/z99_grants.sh:ro
+      - ../stack/bird/seed:/docker-entrypoint-initdb.d/seed:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
