@@ -60,6 +60,8 @@ Study-parity schema on Postgres eval:
 | `arctic_sql_dialect` | string | Prompt dialect override (`postgresql` / sqlite default) |
 | `sqlite_databases_dir` | string | Path to BIRD minidev `dev_databases` when `eval_engine=sqlite` |
 
+Doris dual-DSN (Experiment **D**) is a separate package: [`../../doris-test/`](../../doris-test/) — profiles `arctic-vllm-studyparity-doris-*.json`, harness `--eval-mode dual_dsn --ex-mode bird`.
+
 For `mode=api`, Chainlit is not started (HTTP API on `:8011` / `:8012`).
 
 See [`EXPERIMENTS.md`](../EXPERIMENTS.md) for full workflow.

@@ -1,0 +1,11 @@
+{
+  "name": "smoke_3",
+  "db_profile": "1-db",
+  "description": "Three fixed formula_1 questions for local harness (public schema / formula_1 seed)",
+  "question_ids": [847, 850, 854],
+  "source_files": {
+    "questions": "harness/test_suites/formula_1/mini_dev_formula_1_postgresql.json",
+    "gold": "harness/test_suites/formula_1/mini_dev_formula_1_postgresql_gold.sql"
+  },
+  "created_at": "2026-05-25T00:00:00+00:00"
+}

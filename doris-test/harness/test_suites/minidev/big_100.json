@@ -1,0 +1,702 @@
+[
+  {
+    "question_id": 28,
+    "db_id": "california_schools",
+    "question": "Consider the average difference between K-12 enrollment and 15-17 enrollment of schools that are locally funded, list the names and DOC type of schools which has a difference above this average.",
+    "evidence": "Difference between K-12 enrollment and 15-17 enrollment can be computed by `Enrollment (K-12)` - `Enrollment (Ages 5-17)`",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 12,
+    "db_id": "california_schools",
+    "question": "Among the schools with an SAT excellence rate of over 0.3, what is the highest eligible free rate for students aged 5-17?",
+    "evidence": "Excellence rate = NumGE1500 / NumTstTakr; Eligible free rates for students aged 5-17 = `Free Meal Count (Ages 5-17)` / `Enrollment (Ages 5-17)`",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 5,
+    "db_id": "california_schools",
+    "question": "How many schools with an average score in Math greater than 400 in the SAT test are exclusively virtual?",
+    "evidence": "Exclusively virtual refers to Virtual = 'F'",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 36,
+    "db_id": "california_schools",
+    "question": "Under whose administration is the school with the highest number of students scoring 1500 or more on the SAT? Indicate their full names.",
+    "evidence": "full name means first name, last name; There are at most 3 administrators for each school; SAT Scores are greater or equal to 1500 refers to NumGE1500",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 23,
+    "db_id": "california_schools",
+    "question": "List the names of schools with more than 30 difference in enrollements between K-12 and ages 5-17? Please also give the full street adress of the schools.",
+    "evidence": "Diffrence in enrollement = `Enrollment (K-12)` - `Enrollment (Ages 5-17)`",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 11,
+    "db_id": "california_schools",
+    "question": "Please list the codes of the schools with a total enrollment of over 500.",
+    "evidence": "Total enrollment can be represented by `Enrollment (K-12)` + `Enrollment (Ages 5-17)`",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 62,
+    "db_id": "california_schools",
+    "question": "What is the total number of non-chartered schools in the county of Los Angeles with a percent (%) of eligible free meals for grades 1 through 12 that is less than 0.18%?",
+    "evidence": "non-chartered schools refer to schools whose Charter = 0; K-12 means grades 1 through 12; percent of eligible free rate for K-12 = `Free Meal Count (K-12)` * 100 / `Enrollment (K-12)`",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 24,
+    "db_id": "california_schools",
+    "question": "Give the names of the schools with the percent eligible for free meals in K-12 is more than 0.1 and test takers whose test score is greater than or equal to 1500?",
+    "evidence": "Percent eligible for free meals = Free Meal Count (K-12) / Total (Enrollment (K-12)",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 17,
+    "db_id": "california_schools",
+    "question": "Rank schools by their average score in Writing where the score is greater than 499, showing their charter numbers.",
+    "evidence": "Valid charter number means the number is not null",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 83,
+    "db_id": "california_schools",
+    "question": "Of the schools that offers a magnet program serving a grade span of Kindergarten to 8th grade, how many offers Multiple Provision Types? List the number of cities that offers a Kindergarten to 8th grade span and indicate how many schools are there serving such grade span for each city.",
+    "evidence": "Kindergarten to 8th grade refers to K-8; 'Offers a magnet program' means Magnet = 1; Multiple Provision Types refers to `NSLP Provision Status` = 'Multiple Provision Types'",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 25,
+    "db_id": "california_schools",
+    "question": "Name schools in Riverside which the average of average math score for SAT is grater than 400, what is the funding type of these schools?",
+    "evidence": "Average of average math = sum(average math scores) / count(schools).",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 39,
+    "db_id": "california_schools",
+    "question": "What is the average number of test takers from Fresno schools that opened between 1/1/1980 and 12/31/1980?",
+    "evidence": "between 1/1/1980 and 12/31/1980 means the year = 1980",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 87,
+    "db_id": "california_schools",
+    "question": "What are the valid e-mail addresses of the administrator of the school located in the San Bernardino county, City of San Bernardino City Unified that opened between 1/1/2009 to 12/31/2010 whose school types are public Intermediate/Middle Schools and Unified Schools?",
+    "evidence": "Intermediate/Middle Schools refers to SOC = 62; Unified School refers to DOC = 54; years between 2009 and 2010 can refer to 'between 1/1/2009 to 12/31/2010'",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 26,
+    "db_id": "california_schools",
+    "question": "State the names and full communication address of high schools in Monterey which has more than 800 free or reduced price meals for ages 15-17?",
+    "evidence": "Full communication address should include Street, City, State and zip code if any.",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 41,
+    "db_id": "california_schools",
+    "question": "List the names of virtual schools that are among the top 5 in their respective counties based on average reading scores.",
+    "evidence": "Exclusively virtual refers to Virtual = 'F'; respective counties means PARTITION BY County",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 94,
+    "db_id": "financial",
+    "question": "List out the account numbers of female clients who are oldest and has lowest average salary, calculate the gap between this lowest average salary with the highest average salary?",
+    "evidence": "Female means gender = 'F'; A11 refers to average salary; Gap = highest average salary - lowest average salary; If the person A's birthdate > B's birthdate, it means that person B is order than person A.",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 27,
+    "db_id": "california_schools",
+    "question": "What is the average score in writing for the schools that were opened after 1991 or closed before 2000? List the school names along with the score. Also, list the communication number of the schools if there is any.",
+    "evidence": "Communication number refers to phone number.",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 46,
+    "db_id": "california_schools",
+    "question": "Which state special schools have the highest number of enrollees from grades 1 through 12?",
+    "evidence": "State Special Schools refers to DOC = 31; Grades 1 through 12 means K-12",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 115,
+    "db_id": "financial",
+    "question": "For the branch which located in the south Bohemia with biggest number of inhabitants, what is the percentage of the male clients?",
+    "evidence": "Percentage of the male clients = DIVIDE(COUNT(male clients), COUNT(clients)) * 100; Male refers to gender = 'M', A3 is the region name. A4 contains the information about inhabitants.",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 31,
+    "db_id": "california_schools",
+    "question": "What is the eligible free rate of the 10th and 11th schools with the highest enrolment for students in grades 1 through 12?",
+    "evidence": "K-12 refers to students in grades 1 through 12; Eligible free rate for K-12 = `Free Meal Count (K-12)` / `Enrollment (K-12)`",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 50,
+    "db_id": "california_schools",
+    "question": "What is the postal street address for the school with the 7th highest Math average? Indicate the school's name.",
+    "evidence": "Postal street and mailing street are synonyms.",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 116,
+    "db_id": "financial",
+    "question": "For the client whose loan was approved first in 1993/7/5, what is the increase rate of his/her account balance from 1993/3/22 to 1998/12/27?",
+    "evidence": "Increase rate of his/her account balance = [(balance of date A - balance of date B) / balance of Date B] * 100%",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 32,
+    "db_id": "california_schools",
+    "question": "What is the eligible free or reduced price meal rate for the top 5 schools in grades 1-12 with the highest free or reduced price meal count of the schools with the ownership code 66?",
+    "evidence": "grades 1-12 means K-12; Eligible free or reduced price meal rate for K-12 = `FRPM Count (K-12)` / `Enrollment (K-12)`",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 82,
+    "db_id": "california_schools",
+    "question": "What is the grade span offered in the school with the highest longitude?",
+    "evidence": "the highest longitude refers to the school with the maximum absolute longitude value.",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 125,
+    "db_id": "financial",
+    "question": "For loans contracts which are still running where client are in debt, list the district of the and the state the percentage unemployment rate increment from year 1995 to 1996.",
+    "evidence": "Unemployment increment rate in percentage = [(unemployment rate 2016 - unemployment rate 2015) / unemployment rate 2015] * 100; unemployment rate 2015 appears in the A12; unemployment rate 2016 appears in the A13; Loan contracts which are still running where client are in debt can be presented as status = 'D'",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 37,
+    "db_id": "california_schools",
+    "question": "What is the complete address of the school with the lowest excellence rate? Indicate the Street, City, Zip and State.",
+    "evidence": "Execellence Rate = NumGE1500 / NumTstTakr; complete address has Street, City, State, Zip code",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 92,
+    "db_id": "financial",
+    "question": "List out the no. of districts that have female average salary is more than 6000 but less than 10000?",
+    "evidence": "A11 refers to average salary; Female mapps to gender = 'F'",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 149,
+    "db_id": "financial",
+    "question": "Please list the account types that are not eligible for loans, and the average income of residents in the district where the account is located exceeds $8000 but is no more than $9000.",
+    "evidence": "A11 represents the average salary; Salary and income share the similar meanings; when the account type = 'OWNER', it's eligible for loans",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 40,
+    "db_id": "california_schools",
+    "question": "What is the telephone number for the school with the lowest average score in reading in Fresno Unified?",
+    "evidence": "Fresno Unified is a name of district;",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 112,
+    "db_id": "financial",
+    "question": "For the female client who was born in 1976/1/29, which district did she opened her account?",
+    "evidence": "Female refers to gender = 'F'; A2 refers to district names",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 169,
+    "db_id": "financial",
+    "question": "What was the growth rate of the total amount of loans across all accounts for a male client between 1996 and 1997?",
+    "evidence": "Growth rate = (sum of amount_1997 - sum of amount_1996) / (sum of amount_1996) * 100%; Male refers to gender = 'M'",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 45,
+    "db_id": "california_schools",
+    "question": "What is the average writing score of each of the schools managed by Ricci Ulrich? List the schools and the corresponding average writing scores.",
+    "evidence": "Usually, administrators manage the school stuff.",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 159,
+    "db_id": "financial",
+    "question": "List all the withdrawals in cash transactions that the client with the id 3356 makes.",
+    "evidence": "operation = 'VYBER' refers to withdrawal in cash",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 173,
+    "db_id": "financial",
+    "question": "How often does account number 3 request an account statement to be released? What was the aim of debiting 3539 in total?",
+    "evidence": "k_symbol refers to the purpose of payments",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 47,
+    "db_id": "california_schools",
+    "question": "What is the monthly average number of schools that opened in Alameda County under the jurisdiction of the Elementary School District in 1980?",
+    "evidence": "Elementary School District refers to DOC = 52; Monthly average number of schools that opened in 1980 = count(schools that opened in 1980) / 12",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 195,
+    "db_id": "toxicology",
+    "question": "What is the most common bond type?",
+    "evidence": "most common bond type refers MAX(COUNT(bond_type))",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 198,
+    "db_id": "toxicology",
+    "question": "On average how many carcinogenic molecules are single bonded?",
+    "evidence": "carcinogenic molecules refers to label = '+'; single-bonded refers to bond_type = '-'; average = DIVIDE(SUM(bond_type = '-'), COUNT(atom_id))",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 48,
+    "db_id": "california_schools",
+    "question": "What is the ratio of merged Unified School District schools in Orange County to merged Elementary School District schools?",
+    "evidence": "Elementary School District refers to DOC = 52; Unified School District refers to DOC = 54.",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 200,
+    "db_id": "toxicology",
+    "question": "Find the triple-bonded molecules which are carcinogenic.",
+    "evidence": "triple-bonded molecules refers to bond_type = '#'; carcinogenic refers to label = '+'",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 206,
+    "db_id": "toxicology",
+    "question": "What elements are in the TR004_8_9 bond atoms?",
+    "evidence": "TR004_8_9 bond atoms refers to bond_id = 'TR004_8_9';",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 72,
+    "db_id": "california_schools",
+    "question": "How many students from the ages of 5 to 17 are enrolled at the State Special School school in Fremont for the 2014-2015 academic year?",
+    "evidence": "State Special School means EdOpsCode = 'SSS'",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 227,
+    "db_id": "toxicology",
+    "question": "What is the percentage of molecules that are carcinogenic? Please provide your answer as a percentage with three decimal places.",
+    "evidence": "label = '+' mean molecules are carcinogenic; percentage = DIVIDE(SUM(label = '+'), COUNT(molecule_id)) as percent",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 207,
+    "db_id": "toxicology",
+    "question": "What elements are in a double type bond?",
+    "evidence": "double type bond refers to bond_type = '=';",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 77,
+    "db_id": "california_schools",
+    "question": "Which schools served a grade span of Kindergarten to 9th grade in the county of Los Angeles and what is its Percent (%) Eligible FRPM (Ages 5-17)?",
+    "evidence": "Percent (%) Eligible FRPM (Ages 5-17) can be acquired by `FRPM Count (Ages 5-17)` / `Enrollment (Ages 5-17)` * 100",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 239,
+    "db_id": "toxicology",
+    "question": "How many connections does the atom 19 have?",
+    "evidence": "connections refers to bond_id; atom 19 refers to atom_id like 'TR%_19';",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 212,
+    "db_id": "toxicology",
+    "question": "Which element is the least numerous in non-carcinogenic molecules?",
+    "evidence": "label = '-' means molecules are non-carcinogenic; least numerous refers to MIN(COUNT(element));",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 79,
+    "db_id": "california_schools",
+    "question": "Between San Diego and Santa Barbara, which county offers the most number of schools that does not offer physical building? Indicate the amount.",
+    "evidence": "'Does not offer physical building' means Virtual = F in the database.",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 248,
+    "db_id": "toxicology",
+    "question": "What are the atoms of the triple bond with the molecule \"TR041\"?",
+    "evidence": "TR041 is the molecule id; triple bond refers to bond_type = '#';",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 215,
+    "db_id": "toxicology",
+    "question": "How many atoms with iodine and with sulfur type elements are there in single bond molecules?",
+    "evidence": "with iodine element refer to element = 'i'; with sulfur element refers to element = 's'; single type bond refers to bond_type = '-'; Should consider the distinct atoms when counting;",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 85,
+    "db_id": "california_schools",
+    "question": "What is the Percent (%) Eligible Free (K-12) in the school administered by an administrator whose first name is Alusine. List the district code of the school.",
+    "evidence": "Percent (%) Eligible Free (K-12) = `Free Meal Count (K-12)` / `Enrollment (K-12)` * 100%",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 340,
+    "db_id": "card_games",
+    "question": "Which are the cards that have incredibly powerful foils.",
+    "evidence": "incredibly poweful foils refers to cardKingdomFoilId is not null AND cardKingdomId is not null",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 218,
+    "db_id": "toxicology",
+    "question": "What percentage of carcinogenic-type molecules does not contain fluorine?",
+    "evidence": "label = '+' mean molecules are carcinogenic; contain fluorine refers to element = 'f'; percentage = DIVIDE(SUM(element = 'f') * 100, COUNT(molecule_id)) where label = '+'; Should consider the distinct atoms when counting;",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 89,
+    "db_id": "financial",
+    "question": "How many accounts who choose issuance after transaction are staying in East Bohemia region?",
+    "evidence": "A3 contains the data of region; 'POPLATEK PO OBRATU' represents for 'issuance after transaction'.",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 341,
+    "db_id": "card_games",
+    "question": "What are the borderless cards available without powerful foils?",
+    "evidence": "borderless' refers to borderColor; poweful foils refers to cardKingdomFoilId paired with cardKingdomId AND cardKingdomId is not null",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 219,
+    "db_id": "toxicology",
+    "question": "What is the percentage of carcinogenic molecules in triple type bonds?",
+    "evidence": "label = '+' mean molecules are carcinogenic; triple bond refers to bond_type = '#'; percentage = DIVIDE(SUM(bond_type = '#') * 100, COUNT(bond_id)) as percent where label = '+'",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 93,
+    "db_id": "financial",
+    "question": "How many male customers who are living in North Bohemia have average salary greater than 8000?",
+    "evidence": "Male means that gender = 'M'; A3 refers to region; A11 pertains to average salary.",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 356,
+    "db_id": "card_games",
+    "question": "How many cards have infinite power?",
+    "evidence": "infinite power refers to power = '*';",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 220,
+    "db_id": "toxicology",
+    "question": "Please list top three elements of the toxicology of the molecule TR000 in alphabetical order.",
+    "evidence": "TR000 is the molecule id;",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 95,
+    "db_id": "financial",
+    "question": "List out the account numbers of clients who are youngest and have highest average salary?",
+    "evidence": "If the person A's birthdate < B's birthdate, it means that person B is younger than person A; A11 refers to average salary",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 358,
+    "db_id": "card_games",
+    "question": "What is the border color of card \"Ancestor's Chosen\"?",
+    "evidence": "name of card  = 'Ancestor''s Chosen' ;",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 230,
+    "db_id": "toxicology",
+    "question": "What are the elements of the toxicology and label of molecule TR060?",
+    "evidence": "TR060 is the molecule id; ",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 98,
+    "db_id": "financial",
+    "question": "Among the accounts who have approved loan date in 1997, list out the accounts that have the lowest approved amount and choose weekly issuance statement.",
+    "evidence": "'POPLATEK TYDNE' stands for weekly issuance",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 366,
+    "db_id": "card_games",
+    "question": "What is the rule of playing card \"Benalish Knight\"?",
+    "evidence": "Benalish Knight' is the name of card; rule of playing card refers to format;",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 231,
+    "db_id": "toxicology",
+    "question": "Which bond type accounted for the majority of the bonds found in molecule TR010 and state whether or not this molecule is carcinogenic?",
+    "evidence": "TR010 is the molecule id; majority of the bond found refers to MAX(COUNT(bond_type)); ",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 99,
+    "db_id": "financial",
+    "question": "Among the accounts who have loan validity more than 12 months, list out the accounts that have the highest approved amount and have account opening date in 1993.",
+    "evidence": "Loan validity more than 12 months refers to duration > 12",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 368,
+    "db_id": "card_games",
+    "question": "What is the percentage of borderless cards?",
+    "evidence": "borderless card refers to borderColor = 'borderless'; percentage = Divide(Count (id) where borderColor = 'borderless', Count(id)) *100",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 240,
+    "db_id": "toxicology",
+    "question": "List all the elements of the toxicology of the molecule \"TR004\".",
+    "evidence": "TR004 is the molecule id;",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 100,
+    "db_id": "financial",
+    "question": "Among the account opened, how many female customers who were born before 1950 and stayed in Sokolov?",
+    "evidence": "Customers refer to clients; Female refers to gender = 'F'; Names of districts appear in column A2",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 377,
+    "db_id": "card_games",
+    "question": "How many cards with original type of \"Summon - Angel\" have subtype other than \"Angel\"?",
+    "evidence": "subtype other than Angel refers to subtypes is not 'Angel';",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 247,
+    "db_id": "toxicology",
+    "question": "List all the elements of atoms that can not bond with any other atoms.",
+    "evidence": " atoms cannot bond with other atoms means atom_id NOT in connected table;",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 117,
+    "db_id": "financial",
+    "question": "What is the percentage of loan amount that has been fully paid with no issue.",
+    "evidence": "Loan paid with no issue means contract finished, no problems; status = 'A' means contract finished, no problems; Percentage of accounts by condition = [(total(amount) & condition) / (total amount)] * 100%",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 379,
+    "db_id": "card_games",
+    "question": "What are the cards belong to duel deck a? List the ID.",
+    "evidence": "duel deck a refers to duelDeck = a;",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 249,
+    "db_id": "toxicology",
+    "question": "What are the elements of the atoms of TR144_8_19?",
+    "evidence": "TR144_8_19 is the bond id; ",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 118,
+    "db_id": "financial",
+    "question": "For loan amount less than USD100,000, what is the percentage of accounts that is still running with no issue.",
+    "evidence": "Status = 'C' stands for running contract, ok so far; Percentage of accounts by condition = [(total(amount) & condition) / (total amount)] * 100.",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 383,
+    "db_id": "card_games",
+    "question": "How many of the banned cards are white border?",
+    "evidence": "banned card refers to status = 'Banned'; white border refers to borderColor = 'white';",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 253,
+    "db_id": "toxicology",
+    "question": "List the elements of all the triple bonds.",
+    "evidence": "triple bond refers to bond_type = '#';",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 119,
+    "db_id": "financial",
+    "question": "For accounts in 1993 with statement issued after transaction, list the account ID, district name and district region.",
+    "evidence": "Records about district names could be found in A2; A3 contains the information about regions. 'POPLATEK PO OBRATU' stands for issuance after transaction",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 414,
+    "db_id": "card_games",
+    "question": "What language is the set of 180 cards that belongs to the Ravnica block translated into?",
+    "evidence": "set of 180 cards refers to baseSetSize = 180",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 263,
+    "db_id": "toxicology",
+    "question": "What is the composition of element chlorine in percentage among the single bond molecules?",
+    "evidence": "element chlorine refers to element = 'cl'; single bond refers to bond_type = '-'; percentage = DIVIDE(SUM(element = 'cl'), COUNT(atom_id)) as percent where bond_type = '-'",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 120,
+    "db_id": "financial",
+    "question": "From Year 1995 to 2000, who are the accounts holders from 'east Bohemia'. State the account ID the frequency of statement issuance.",
+    "evidence": "Accounts holder refers to the person who own this account.",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 422,
+    "db_id": "card_games",
+    "question": "What is the language of the card with the multiverse number 149934?",
+    "evidence": "multiverse number 149934 refers to multiverseid = 149934;",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 268,
+    "db_id": "toxicology",
+    "question": "What are the elements for bond id TR001_10_11?",
+    "evidence": "TR001_10_11 is the bond id;",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 128,
+    "db_id": "financial",
+    "question": "List the top nine districts, by descending order, from the highest to the lowest, the number of female account holders.",
+    "evidence": "A2 refers to districts; Female refers to gender = 'F'",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 424,
+    "db_id": "card_games",
+    "question": "What proportion of cards do not have a text box with a normal layout?",
+    "evidence": "do not have a text box refers to isTextless = 1; proportion refers to DIVIDE(COUNT(Textless = 1 and layout = 'normal'),COUNT(Textless))*100",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 281,
+    "db_id": "toxicology",
+    "question": "Tally the toxicology element of the 4th atom of each molecule that was carcinogenic.",
+    "evidence": "label = '+' means molecules are carcinogenic; 4th atom of each molecule refers to substr(atom_id, 7, 1) = '4'; ",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 129,
+    "db_id": "financial",
+    "question": "Which are the top ten withdrawals (non-credit card) by district names for the month of January 1996?",
+    "evidence": "Non-credit card withdraws refers to type = 'VYDAJ'; January 1996 can be found by date LIKE '1996-01%' in the database; A2 means district names",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 440,
+    "db_id": "card_games",
+    "question": "Which foreign language used by \"A Pedra Fellwar\"?",
+    "evidence": "\"A Pedra Fellwar\" refers to name = 'A Pedra Fellwar'",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 282,
+    "db_id": "toxicology",
+    "question": "What is the ratio of Hydrogen elements in molecule ID TR006? List the ratio with its label.",
+    "evidence": "hydrogen refers to element = 'h'; ratio = DIVIDE(SUM(element = 'h'), count(element)) where molecule_id = 'TR006' ; label = '+' mean molecules are carcinogenic; label = '-' means molecules are non-carcinogenic",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 136,
+    "db_id": "financial",
+    "question": "Between 1/1/1995 and 12/31/1997, how many loans in the amount of at least 250,000 per account that chose monthly statement issuance were approved?",
+    "evidence": "Frequency = 'POPLATEK MESICNE' stands for monthly issurance",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 531,
+    "db_id": "codebase_community",
+    "question": "Which user has a higher reputation, Harlan or Jarrod Dixon?",
+    "evidence": "\"Harlan\" and \"Jarrod Dixon\" are both DisplayName; highest reputation refers to Max(Reputation)",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 371,
+    "db_id": "card_games",
+    "question": "What is the percentage of cards whose language is French among the Story Spotlight cards?",
+    "evidence": "Story Spotlight card refers to isStorySpotlight = 1; French is the language; Percentage = Divide(Count(id) where language = 'French' and isStorySpotlight = 1, Count(id) where isStorySpotlight = 1)*100",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 137,
+    "db_id": "financial",
+    "question": "How many accounts have running contracts in Branch location 1?",
+    "evidence": "Status = 'C' stands for running contract, OK so far; Status = 'D' stands for running contract, client in debt",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 532,
+    "db_id": "codebase_community",
+    "question": "Please list the display names of all the users whose accounts were created in the year 2011.",
+    "evidence": "account created in the year 2011 refers to year(CreationDate) = 2011",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 415,
+    "db_id": "card_games",
+    "question": "What percentage of cards with format commander and legal status do not have a content warning?",
+    "evidence": "do not have a content warning refers to hasContentWarning = 0; percentage refers to DIVIDE(COUNT(hasContentWarning = 0),COUNT(ID))*100 where format = 'commander' AND Status = 'legal';",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 138,
+    "db_id": "financial",
+    "question": "In the branch where the second-highest number of crimes were committed in 1995 occurred, how many male clients are there?",
+    "evidence": "Male refers to gender = 'M'; A15 stands for no. of commited crimes 1995",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 533,
+    "db_id": "codebase_community",
+    "question": "How many users last accessed the website after 2014/9/1?",
+    "evidence": "last accessed after 2014/9/1 refers to LastAccessDate > '2014-09-01'",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 416,
+    "db_id": "card_games",
+    "question": "What percentage of cards without power are in French?",
+    "evidence": "in French refers to language = 'French'; cards without power refers to power IS NULL OR power = '*'; percentage = DIVIDE(COUNT(language = 'French' and power is NULL or power = '*'), COUNT( power is NULL or power = '*'))*100",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 145,
+    "db_id": "financial",
+    "question": "Who are the account holder identification numbers whose who have transactions on the credit card with the amount is less than the average, in 1998?",
+    "evidence": "Operation = 'VYBER KARTOU' refers to credit card withdrawal",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 537,
+    "db_id": "codebase_community",
+    "question": "How many posts does the user csgillespie own?",
+    "evidence": "\"csgillespie\" is the DisplayName of user",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 477,
+    "db_id": "card_games",
+    "question": "Which of these artists have designed a card in the set Coldsnap, Jeremy Jarvis, Aaron Miller or Chippy?",
+    "evidence": "card set Coldsnap refers to name = 'Coldsnap'; Jeremy Jarvis, Aaron Miller or Chippy are the name of artists which refers to artist IN ('Jeremy Jarvis', 'Aaron Miller','Chippy');",
+    "difficulty": "challenging"
+  }
+]

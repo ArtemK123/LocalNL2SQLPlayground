@@ -1,0 +1,8 @@
+# Analytics on AWS: Doris BE storage on EBS /data/doris-be (bind-mount via env).
+
+name: doris-test-analytics
+
+services:
+  doris-be:
+    volumes:
+      - /data/doris-be:/opt/apache-doris/be/storage

@@ -1,0 +1,83 @@
+# LangChain NL2SQL — backend selectable via DB_BACKEND (doris|postgres).
+# Default: Doris MySQL on analytics host + remote Ollama/vLLM on GPU.
+name: doris-test-langchain
+
+networks:
+  doris-test-net:
+    external: true
+    name: doris-test-net
+
+volumes:
+  chainlit_data:
+
+services:
+  langchain-api:
+    build:
+      context: ../../../stacks/langchain/langchain_api
+    ports:
+      - "${LANGCHAIN_API_PORT:-8011}:8011"
+    environment:
+      API_HOST: 0.0.0.0
+      API_PORT: "8011"
+      OLLAMA_HOST: ${OLLAMA_HOST:-http://ollama:11434}
+      OLLAMA_PRIMARY_MODEL: ${OLLAMA_PRIMARY_MODEL:-qwen2.5:7b-instruct}
+      OLLAMA_FALLBACK_MODEL: ${OLLAMA_FALLBACK_MODEL:-qwen2.5:7b-instruct}
+      OLLAMA_NUM_CTX: ${OLLAMA_NUM_CTX:-4096}
+      OLLAMA_NUM_PREDICT: ${OLLAMA_NUM_PREDICT:-512}
+      LLM_BACKEND: ${LLM_BACKEND:-ollama}
+      # When LLM_BACKEND=vllm, set VLLM_BASE_URL (usually same host :11434 as Ollama SG).
+      VLLM_BASE_URL: ${VLLM_BASE_URL:-}
+      VLLM_API_KEY: ${VLLM_API_KEY:-EMPTY}
+      LLM_HTTP_TIMEOUT_SEC: ${LLM_HTTP_TIMEOUT_SEC:-20}
+      ARCTIC_SQL_FENCE_PREFILL: ${ARCTIC_SQL_FENCE_PREFILL:-true}
+      # Prompt dialect: mysql|doris|postgresql|sqlite
+      ARCTIC_SQL_DIALECT: ${ARCTIC_SQL_DIALECT:-mysql}
+      # Stack connection dialect / URI — flip with DB_BACKEND=postgres without rebuild.
+      DB_DIALECT: ${DB_DIALECT:-mysql}
+      # Override via compose/.env DB_URI (ssm-deploy-nl2sql.sh sets Doris or Postgres).
+      DB_URI: ${DB_URI:-mysql+pymysql://root@doris-fe:9030/bird_minidev_olap}
+      DB_ALLOWED_SCHEMAS: ${DB_ALLOWED_SCHEMAS:-}
+      QUERY_TIMEOUT_MS: ${QUERY_TIMEOUT_MS:-30000}
+      MAX_RESULT_ROWS: ${MAX_RESULT_ROWS:-200}
+      SCHEMA_SELECTION_ENABLED: ${SCHEMA_SELECTION_ENABLED:-true}
+      SCHEMA_SHORTLIST_TOP_M: ${SCHEMA_SHORTLIST_TOP_M:-25}
+      SCHEMA_FINAL_TOP_K: ${SCHEMA_FINAL_TOP_K:-8}
+      SCHEMA_SELECTOR_MODE: ${SCHEMA_SELECTOR_MODE:-bm25}
+      SCHEMA_SOURCE: ${SCHEMA_SOURCE:-bird_tables}
+      BIRD_TABLES_JSON: ${BIRD_TABLES_JSON:-/app/data/dev_tables.json}
+      SCHEMA_BM25_INCLUDE_FK: ${SCHEMA_BM25_INCLUDE_FK:-true}
+      NL2SQL_FAST_MODE: ${NL2SQL_FAST_MODE:-true}
+      SQL_REPAIR_MAX_RETRIES: ${SQL_REPAIR_MAX_RETRIES:-0}
+      # skip = harness dual-DSN scores pred on Doris; execute = API also runs SQL
+      SQL_EXEC_MODE: ${SQL_EXEC_MODE:-skip}
+      # Filter schema catalog to schema_name == request.db_id (Doris multi-schema CDC).
+      # Set false when flipping API to single-schema Postgres (public).
+      DB_ID_AS_SCHEMA: ${DB_ID_AS_SCHEMA:-true}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8011/healthz', timeout=5)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    networks:
+      - doris-test-net
+
+  chainlit:
+    profiles: ["ui"]
+    build:
+      context: ../../../stacks/langchain/chainlit_app
+    ports:
+      - "${CHAINLIT_PORT:-8501}:8501"
+    environment:
+      LANGCHAIN_API_URL: http://langchain-api:8011
+      CHAINLIT_AUTH_SECRET: ${CHAINLIT_AUTH_SECRET:-local-dev-secret}
+      CHAINLIT_USERNAME: ${CHAINLIT_USERNAME:-admin}
+      CHAINLIT_PASSWORD: ${CHAINLIT_PASSWORD:-admin}
+    volumes:
+      - chainlit_data:/app/.chainlit
+    depends_on:
+      langchain-api:
+        condition: service_healthy
+    networks:
+      - doris-test-net
