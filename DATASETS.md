@@ -7,7 +7,7 @@
 | Asset | Used by | Approx. size | How it is wired |
 |-------|---------|--------------|-----------------|
 | **Formula 1 seed** (`stack/bird/seed/formula_1_seed.sql`) | Experiment **A** (local 1-db) | ~14 MB | **Included** in this repo for local smoke without full BIRD |
-| **BIRD Mini-Dev PostgreSQL dump** (`BIRD_dev.sql`) | Experiments **B** / **C** (AWS DB load) | ~956 MB | Download → `upload-bird-to-s3.ps1` → DB EC2 loads via S3 |
+| **BIRD Mini-Dev PostgreSQL dump** (`BIRD_dev.sql`) | Experiments **B** / **C** / **D** (AWS DB load; D then CDC into Doris) | ~956 MB | Download → `upload-bird-to-s3.ps1` → DB EC2 loads via S3 |
 | **Mini-Dev questions + gold** | Harness suites | small | Suite JSON/JSONL under `nl2sql-comparison/harness/test_suites/minidev/` (included) |
 | **Mini-Dev SQLite `dev_databases/`** | Optional SQLite Gen-EX eval (study-parity SQLite profiles) | large | Set `sqlite_databases_dir` in experiment profiles |
 | **`dev_tables.json`** | LangChain BM25 CREATE-TABLE schema | small | Shipped at `stacks/langchain/langchain_api/data/dev_tables.json` |
@@ -66,6 +66,19 @@ cd nl2sql-comparison
 
 Never `scp` the multi-hundred-MB dump directly to EC2 in normal workflow — use the S3 staging scripts.
 
+### AWS Doris CDC (Experiment D)
+
+Doris is **not** loaded from CSV. After the same Mini-Dev Postgres dump is on the **db** role, analytics CDC copies OLTP into Doris:
+
+```powershell
+cd doris-test
+.\scripts\aws\upload-bird-to-s3.ps1
+.\scripts\aws\deploy-db-from-s3.ps1
+.\scripts\aws\deploy-analytics-from-s3.ps1   # Debezium snapshot + routine loads; wait until ODS healthy
+```
+
+Local equivalent: `load_bird_dev.ps1` then `generate-and-up-analytics.ps1`. Committed ingest artifacts: `doris-test/stack/connectors/bird-postgres-source.json` and `doris-test/stack/doris/*.sql`.
+
 ### SQLite study-parity eval path
 
 Edit profiles such as `experiments/profiles/arctic-vllm-onepass-10s-full.json`:
@@ -81,4 +94,4 @@ Use an absolute path to your unpacked Mini-Dev `dev_databases` directory.
 - Full `BIRD_dev.sql`
 - Mini-Dev `dev_databases/` SQLite trees
 - GGUF / HF model weight caches
-- Raw harness `jsonl/` and Playwright `traces/` for every draft run
+- Raw harness `jsonl/` and Playwright `traces/` for every draft run (including the 500-question Doris jsonl; regenerate with the dual-DSN harness)

@@ -1,0 +1,21 @@
+{
+  "name": "arctic-vllm-studyparity-doris-full",
+  "description": "Full minidev 500: Arctic vLLM + Doris dual-DSN (gold PG, pred Doris), bird EX, timeout 10s, workers=2",
+  "model": "Snowflake/Arctic-Text2SQL-R1-7B",
+  "suite": "full",
+  "stack": "langchain",
+  "mode": "api",
+  "workers": 2,
+  "timeout_sec": 10,
+  "llm_backend": "vllm",
+  "eval_mode": "dual_dsn",
+  "arctic_sql_dialect": "mysql",
+  "db_backend": "doris",
+  "sql_exec_mode": "skip",
+  "schema_source": "bird_tables",
+  "ex_mode": "bird",
+  "gold_dsn": "postgresql://olap:olap@127.0.0.1:55433/bird",
+  "pred_dsn": "mysql://root@127.0.0.1:9031/bird_minidev_olap",
+  "api_url": "http://127.0.0.1:8011/v1/chat",
+  "skip_publish": true
+}

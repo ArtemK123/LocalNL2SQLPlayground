@@ -1,0 +1,1 @@
+CREATE DATABASE IF NOT EXISTS bird_minidev_olap;

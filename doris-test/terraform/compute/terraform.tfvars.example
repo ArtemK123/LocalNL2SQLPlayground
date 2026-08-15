@@ -1,0 +1,29 @@
+# Copy to terraform.tfvars (not committed) and fill in.
+#
+# Apply order:
+#   1. terraform/persistent/  -> note volume ids
+#   2. terraform/compute/     -> set *_persistent_volume_id from step 1
+
+aws_region   = "us-east-1"
+project_name = "doris-test"
+
+allowed_ssh_cidr = "203.0.113.10/32" # your public IPv4 /32
+key_name         = "my-keypair-name" # existing key pair in region
+
+# From: terraform -chdir=../persistent output
+db_persistent_volume_id        = "vol-0123456789abcdef0"
+analytics_persistent_volume_id = "vol-0123456789abcdef1"
+
+bird_dataset_bucket   = "my-bird-datasets-bucket"
+bird_dataset_prefix   = "doris-test/package"
+bird_dataset_version  = "2026-06-01"
+
+db_instance_type        = "c7i.xlarge"
+gpu_instance_type       = "g6.xlarge"   # on-demand L4
+analytics_instance_type = "r6i.xlarge"
+nl2sql_instance_type    = "c7i.large"
+
+db_use_spot        = true
+gpu_use_spot       = false
+analytics_use_spot = true
+nl2sql_use_spot    = true

@@ -1,0 +1,72 @@
+[
+  {
+    "question_id": 28,
+    "db_id": "california_schools",
+    "question": "Consider the average difference between K-12 enrollment and 15-17 enrollment of schools that are locally funded, list the names and DOC type of schools which has a difference above this average.",
+    "evidence": "Difference between K-12 enrollment and 15-17 enrollment can be computed by `Enrollment (K-12)` - `Enrollment (Ages 5-17)`",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 12,
+    "db_id": "california_schools",
+    "question": "Among the schools with an SAT excellence rate of over 0.3, what is the highest eligible free rate for students aged 5-17?",
+    "evidence": "Excellence rate = NumGE1500 / NumTstTakr; Eligible free rates for students aged 5-17 = `Free Meal Count (Ages 5-17)` / `Enrollment (Ages 5-17)`",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 5,
+    "db_id": "california_schools",
+    "question": "How many schools with an average score in Math greater than 400 in the SAT test are exclusively virtual?",
+    "evidence": "Exclusively virtual refers to Virtual = 'F'",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 36,
+    "db_id": "california_schools",
+    "question": "Under whose administration is the school with the highest number of students scoring 1500 or more on the SAT? Indicate their full names.",
+    "evidence": "full name means first name, last name; There are at most 3 administrators for each school; SAT Scores are greater or equal to 1500 refers to NumGE1500",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 23,
+    "db_id": "california_schools",
+    "question": "List the names of schools with more than 30 difference in enrollements between K-12 and ages 5-17? Please also give the full street adress of the schools.",
+    "evidence": "Diffrence in enrollement = `Enrollment (K-12)` - `Enrollment (Ages 5-17)`",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 11,
+    "db_id": "california_schools",
+    "question": "Please list the codes of the schools with a total enrollment of over 500.",
+    "evidence": "Total enrollment can be represented by `Enrollment (K-12)` + `Enrollment (Ages 5-17)`",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 62,
+    "db_id": "california_schools",
+    "question": "What is the total number of non-chartered schools in the county of Los Angeles with a percent (%) of eligible free meals for grades 1 through 12 that is less than 0.18%?",
+    "evidence": "non-chartered schools refer to schools whose Charter = 0; K-12 means grades 1 through 12; percent of eligible free rate for K-12 = `Free Meal Count (K-12)` * 100 / `Enrollment (K-12)`",
+    "difficulty": "challenging"
+  },
+  {
+    "question_id": 24,
+    "db_id": "california_schools",
+    "question": "Give the names of the schools with the percent eligible for free meals in K-12 is more than 0.1 and test takers whose test score is greater than or equal to 1500?",
+    "evidence": "Percent eligible for free meals = Free Meal Count (K-12) / Total (Enrollment (K-12)",
+    "difficulty": "moderate"
+  },
+  {
+    "question_id": 17,
+    "db_id": "california_schools",
+    "question": "Rank schools by their average score in Writing where the score is greater than 499, showing their charter numbers.",
+    "evidence": "Valid charter number means the number is not null",
+    "difficulty": "simple"
+  },
+  {
+    "question_id": 83,
+    "db_id": "california_schools",
+    "question": "Of the schools that offers a magnet program serving a grade span of Kindergarten to 8th grade, how many offers Multiple Provision Types? List the number of cities that offers a Kindergarten to 8th grade span and indicate how many schools are there serving such grade span for each city.",
+    "evidence": "Kindergarten to 8th grade refers to K-8; 'Offers a magnet program' means Magnet = 1; Multiple Provision Types refers to `NSLP Provision Status` = 'Multiple Provision Types'",
+    "difficulty": "challenging"
+  }
+]

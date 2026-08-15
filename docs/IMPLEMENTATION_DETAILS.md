@@ -9,8 +9,9 @@ Source: `stacks/langchain/langchain_api/app/agent.py`.
 ### OmniSQL / Arctic SQL generation (`ARCTIC_SQL_PROMPT`)
 
 - **System:** *"You are a data science expert…"* (generate a valid SQL query for the given schema + question).
-- **Human fields:** `Database Engine` (`SQLite` or `PostgreSQL` from `ARCTIC_SQL_DIALECT`), `Database Schema` (`{schema_reference}`), `Question` (`{question_with_evidence}`), instructions (SELECT only asked columns; think step-by-step), output format, *"Start your reply with: Let me solve this step by step."*
+- **Human fields:** `Database Engine` (`SQLite`, `PostgreSQL`, or MySQL/Doris from `ARCTIC_SQL_DIALECT`), `Database Schema` (`{schema_reference}`), `Question` (`{question_with_evidence}`), instructions (SELECT only asked columns; think step-by-step), output format, *"Start your reply with: Let me solve this step by step."*
 - **PostgreSQL dialect hint** (when engine is PostgreSQL): use PostgreSQL syntax; double-quote identifiers only when needed; no SQLite backticks.
+- **MySQL / Doris dialect** (Experiment D): `doris-test/stacks/langchain/langchain_api/app/dialect.py` demands `DATE_FORMAT` / `CONCAT` / `NOW` / backticks and forbids `strftime` / `||`.
 
 ### Repair / answer / reasoning prompts
 
@@ -31,7 +32,7 @@ Controlled by env (see `env.aws.example` + LangChain compose):
 | Variable | Study-parity value | Role |
 |----------|-------------------|------|
 | `ARCTIC_SQL_FENCE_PREFILL` | `true` | Prefill assistant with SQL fence; continue final message |
-| `ARCTIC_SQL_DIALECT` | `sqlite` or `postgresql` | Prompt engine label |
+| `ARCTIC_SQL_DIALECT` | `sqlite`, `postgresql`, or `mysql` (D) | Prompt engine label |
 | `OLLAMA_NUM_PREDICT` / vLLM max tokens | `512` (one-pass) | Cap generation length |
 | `LLM_HTTP_TIMEOUT_SEC` | `20` | HTTP client timeout to vLLM |
 | Harness `timeout_sec` | `10` | Per-question client SLA in profiles |
@@ -119,6 +120,7 @@ WrenAI (framework comparison) uses separate retrieval knobs in env examples:
 | `compose/docker-compose.gpu.cpu.yml` | CPU fallback Ollama |
 | `compose/stacks/<framework>/docker-compose.yml` | One NL2SQL framework at a time |
 | `stack/bird/init/*.sql`, `z99_grants.sh` | Roles / grants for bird + olap + nl2sql_ro |
+| `doris-test/compose/docker-compose.analytics.yml` | Experiment D: Kafka + Debezium + Doris FE/BE (CDC from Postgres, not CSV) |
 
 **Policy:** only one framework compose project on the NL2SQL host at a time.
 
@@ -145,3 +147,30 @@ Copy `terraform.tfvars.example` → `terraform.tfvars` (**do not commit**). Prov
 | Orchestrator | `scripts/aws/run-benchmark-aws.ps1` |
 
 Committed reference scores for Experiment C: `results/aws_20260809_studyparity_postgres/` (`manifest.json`, `summary.md`).
+
+## 7. Apache Doris (Experiment D)
+
+Package root: `doris-test/` (not `nl2sql-comparison/`). Gold remains Postgres; predicted SQL runs on Doris after CDC.
+
+| Parameter | Value |
+|-----------|--------|
+| Model | `Snowflake/Arctic-Text2SQL-R1-7B` |
+| Backend | **vLLM** (`LLM_BACKEND=vllm`) |
+| `ARCTIC_SQL_DIALECT` | `mysql` |
+| `SCHEMA_SOURCE` | `bird_tables` |
+| `SQL_EXEC_MODE` | `skip` |
+| `DB_URI` | `mysql+pymysql://root@<DORIS_FE>:9030/bird_minidev_olap` |
+| Harness | `doris-test-harness` `--eval-mode dual_dsn --ex-mode bird` |
+| Gold DSN | `postgresql://olap:olap@127.0.0.1:55433/bird` |
+| Pred DSN | `mysql://root@127.0.0.1:9031/bird_minidev_olap` |
+| Suite | `full` (Mini-Dev **N=500**); gate `minidev_diverse_10` |
+| Timeout / workers | **10 s** / **2** |
+| Profile | `doris-test/experiments/profiles/arctic-vllm-studyparity-doris-full.json` |
+
+MySQL dialect instructions: `stacks/langchain/langchain_api/app/dialect.py` (`MYSQL_DIALECT_INSTRUCTIONS`). Universal SQLite→MySQL compiler: `sql_guard.py` (`strftime`→`DATE_FORMAT`, `||`→`CONCAT`, `IIF`→`IF`, reserved-table backticks). No per-question patches.
+
+Ingest: Postgres OLTP → Debezium (`stack/connectors/bird-postgres-source.json`) → Kafka → Doris routine loads (`stack/doris/20_routine_loads.sql`). **Not** bulk CSV. Start GPU only after ODS is healthy.
+
+CDC compose: `doris-test/compose/docker-compose.analytics.yml`. Four-role Terraform examples: `doris-test/terraform/*/terraform.tfvars.example`.
+
+Committed reference: `doris-test/results/doris_20260815_113514/` (overall EX **0.42**, EX among `dual_ok` **0.468**). Methodology: `doris-test/experiments/arctic-vllm-doris-vs-sqlite-postgres.md`.

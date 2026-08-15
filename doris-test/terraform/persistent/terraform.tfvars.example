@@ -1,0 +1,5 @@
+aws_region     = "us-east-1"
+project_name   = "doris-test"
+availability_zone = ""
+db_volume_gb   = 50
+analytics_volume_gb = 100

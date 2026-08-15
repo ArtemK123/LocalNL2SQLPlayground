@@ -1,0 +1,35 @@
+{
+  "name": "medium_25",
+  "question_ids": [
+    28,
+    12,
+    5,
+    36,
+    23,
+    11,
+    62,
+    24,
+    17,
+    83,
+    25,
+    39,
+    87,
+    26,
+    41,
+    94,
+    27,
+    46,
+    115,
+    31,
+    50,
+    116,
+    32,
+    82,
+    125
+  ],
+  "source_files": {
+    "questions": "C:\\Study\\KPI\\Аспірантура\\Наукова робота\\Стаття - OnPremise OLAP with NL2SQL\\code\\datasets\\minidev\\MINIDEV\\mini_dev_postgresql.json",
+    "gold": "C:\\Study\\KPI\\Аспірантура\\Наукова робота\\Стаття - OnPremise OLAP with NL2SQL\\code\\datasets\\minidev\\MINIDEV\\mini_dev_postgresql_gold.sql"
+  },
+  "created_at": "2026-05-24T18:51:56.784349+00:00"
+}

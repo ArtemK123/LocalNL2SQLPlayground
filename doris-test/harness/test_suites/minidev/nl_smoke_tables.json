@@ -1,0 +1,8 @@
+[
+  {
+    "question_id": "aws_nl_tables",
+    "db_id": "bird",
+    "question": "how many tables in db",
+    "difficulty": "simple"
+  }
+]
